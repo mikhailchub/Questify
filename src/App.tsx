@@ -282,7 +282,7 @@ export function App() {
       <Dialog
         open={showBuilder}
         onClose={() => setShowBuilder(false)}
-        title="Create Old Quest"
+        title="Create Older Quest"
         footer={
           <>
             <Button variant="ghost" onClick={() => setShowBuilder(false)}>Cancel</Button>
