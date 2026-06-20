@@ -1,0 +1,3 @@
+interface:
+  display_name: "Requirements To GitHub Pages"
+  short_description: "Build a GitHub Pages app from existing requirements"
