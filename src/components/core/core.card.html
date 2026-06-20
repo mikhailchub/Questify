@@ -1,0 +1,104 @@
+<!-- @dsCard group="Components" viewport="700x560" name="Core — buttons, forms, feedback" subtitle="Button · Input · Checkbox · Switch · Tag · Badge · Avatar · Tabs" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../../styles.css" />
+<style>
+  body { margin:0; padding:26px 28px; background:var(--bg-base); font-family:var(--font-body); }
+  .sec { margin-bottom:22px; }
+  .h { font-family:var(--font-body); font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--text-muted); margin:0 0 12px; }
+  .row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  /* button */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 20px; font-family:var(--font-display); font-weight:600; font-size:16px; line-height:1; border:2px solid transparent; border-radius:var(--radius-lg); cursor:pointer; }
+  .btn svg { width:18px; height:18px; }
+  .b-prim { background:var(--primary); color:var(--on-primary); box-shadow:var(--pop-primary); }
+  .b-acc { background:var(--accent); color:var(--on-accent); box-shadow:var(--pop-accent); }
+  .b-sec { background:var(--surface-raised); color:var(--text-strong); border-color:var(--border-strong); }
+  .b-ghost { background:transparent; color:var(--text-body); }
+  .b-danger { background:var(--danger); color:#fff; }
+  .b-sm { height:36px; padding:0 14px; font-size:14px; border-radius:var(--radius-md); }
+  .icb { width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; border-radius:var(--radius-md); border:1px solid var(--border-strong); background:var(--surface-raised); color:var(--text-strong); cursor:pointer; }
+  .icb svg { width:20px; height:20px; }
+  /* input */
+  .field { display:flex; flex-direction:column; gap:6px; width:220px; }
+  .lab { font-size:14px; font-weight:600; color:var(--text-strong); }
+  .inp { height:44px; padding:0 14px; font-family:var(--font-body); font-size:16px; color:var(--text-strong); background:var(--surface-raised); border:2px solid var(--border-strong); border-radius:var(--radius-md); }
+  .inp.focus { border-color:var(--border-focus); box-shadow:var(--ring); }
+  .inp.err { border-color:var(--danger); }
+  .errtext { font-size:12px; color:var(--danger); }
+  /* check + switch */
+  .ck { width:24px; height:24px; border-radius:var(--radius-sm); border:2px solid var(--primary); background:var(--primary); color:var(--on-primary); display:inline-flex; align-items:center; justify-content:center; }
+  .ck.off { background:var(--surface-raised); border-color:var(--border-strong); }
+  .ck svg { width:15px; height:15px; }
+  .sw { width:44px; height:26px; border-radius:999px; background:var(--primary); padding:3px; display:inline-flex; }
+  .sw .kn { width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:var(--shadow-sm); margin-left:18px; }
+  .sw.off { background:var(--border-strong); }
+  .sw.off .kn { margin-left:0; }
+  /* tag + badge */
+  .tag { display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px; font-size:12px; font-weight:600; border-radius:999px; }
+  .badge { display:inline-flex; align-items:center; gap:6px; height:22px; padding:0 9px; font-size:11px; font-weight:700; letter-spacing:.02em; border-radius:999px; }
+  .dot { width:7px; height:7px; border-radius:50%; }
+  /* avatar */
+  .av { width:48px; height:48px; border-radius:50%; border:3px solid var(--primary); background:var(--primary-soft); color:var(--gold-800); display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:19px; position:relative; }
+  .av .lv { position:absolute; bottom:-2px; right:-2px; min-width:20px; height:20px; padding:0 4px; border-radius:999px; background:var(--warm-900); color:var(--gold-300); border:2px solid var(--surface-raised); font-family:var(--font-mono); font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; }
+  /* tabs */
+  .tabs { display:inline-flex; gap:4px; padding:4px; background:var(--bg-sunken); border-radius:var(--radius-lg); }
+  .tab { display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 16px; font-family:var(--font-display); font-weight:600; font-size:14px; color:var(--text-muted); border-radius:var(--radius-md); }
+  .tab.on { color:var(--text-strong); background:var(--surface-raised); box-shadow:var(--shadow-sm); }
+  .tab .ct { font-family:var(--font-mono); font-size:11px; color:var(--primary); }
+</style>
+</head>
+<body>
+  <div class="sec">
+    <p class="h">Button — variants &amp; sizes</p>
+    <div class="row">
+      <button class="btn b-prim"><i data-lucide="sword"></i> Start quest</button>
+      <button class="btn b-acc">Claim</button>
+      <button class="btn b-sec">Save draft</button>
+      <button class="btn b-ghost">Cancel</button>
+      <button class="btn b-danger">Abandon</button>
+      <button class="btn b-prim b-sm">Small</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="h">Icon button · Input · Checkbox · Switch</p>
+    <div class="row" style="align-items:flex-end;">
+      <button class="icb"><i data-lucide="plus"></i></button>
+      <button class="icb"><i data-lucide="more-horizontal"></i></button>
+      <div class="field"><span class="lab">Quest title</span><input class="inp" value="Defeat the inbox" /></div>
+      <div class="field"><span class="lab">Deadline</span><input class="inp err" value="2020-01-01" /><span class="errtext">Pick a future date</span></div>
+    </div>
+    <div class="row" style="margin-top:14px;">
+      <span style="display:inline-flex; align-items:center; gap:10px;"><span class="ck"><i data-lucide="check"></i></span><span style="font-size:15px;">Write the spec</span></span>
+      <span style="display:inline-flex; align-items:center; gap:10px;"><span class="ck off"></span><span style="font-size:15px; color:var(--text-muted);">Review PR</span></span>
+      <span style="display:inline-flex; align-items:center; gap:10px;"><span class="sw"><span class="kn"></span></span><span style="font-size:15px;">Dark mode</span></span>
+      <span style="display:inline-flex; align-items:center; gap:10px;"><span class="sw off"><span class="kn"></span></span><span style="font-size:15px; color:var(--text-muted);">Silent</span></span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <p class="h">Tag · Badge · Avatar · Tabs</p>
+    <div class="row">
+      <span class="tag" style="background:var(--primary-soft); color:var(--gold-800);">#bug</span>
+      <span class="tag" style="background:var(--info-soft); color:var(--blue-700);">#meeting</span>
+      <span class="tag" style="background:var(--accent-soft); color:var(--ember-700);">#urgent</span>
+      <span class="badge" style="background:var(--danger-soft); color:var(--red-700);"><span class="dot" style="background:var(--red-700)"></span>Overdue</span>
+      <span class="badge" style="background:var(--primary); color:var(--on-primary);">Lv 14</span>
+      <span class="badge" style="background:var(--success-soft); color:var(--green-700);">Done</span>
+      <span class="av">AL<span class="lv">14</span></span>
+    </div>
+    <div class="row" style="margin-top:14px;">
+      <div class="tabs">
+        <span class="tab on">Today <span class="ct">4</span></span>
+        <span class="tab">Upcoming <span class="ct" style="color:var(--text-muted)">11</span></span>
+        <span class="tab">Done</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

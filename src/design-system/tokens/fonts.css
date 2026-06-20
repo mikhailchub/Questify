@@ -1,0 +1,6 @@
+/* Webfonts. Hosted on Google Fonts CDN.
+   - Fredoka: friendly rounded display — quest titles, headings, numbers.
+   - Plus Jakarta Sans: clean geometric-humanist body & UI text.
+   - JetBrains Mono: code, formulas (XP), token values, stat readouts.
+   If you ship offline, self-host these and replace with @font-face rules. */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&display=swap");
