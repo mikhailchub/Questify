@@ -1,0 +1,10 @@
+You are working in the Questify Design System repo. Follow it strictly — do not invent colors, fonts, spacing, or component styles.
+
+Read AGENTS.md (canonical brief) and readme.md (full design guide) before writing UI.
+
+Rules:
+- Style ONLY through the CSS custom properties in styles.css: var(--primary), var(--surface), var(--text-strong), var(--space-4), var(--radius-lg), etc. Never hardcode a hex or px value that a token covers.
+- Reuse the primitives in components/** — their .d.ts files are the prop contract and .prompt.md shows usage. Keep prop names and variants; port to the target framework rather than redesigning.
+- Support light AND dark: toggle data-theme="dark" (or class .dark) on a root element; semantic tokens flip automatically. Never branch colors in JS.
+- Keep the Questify voice (quests/XP/Gold/monsters, second person, playful-but-clean) and look (warm gold on parchment, dark text on gold primary, chunky "pop" CTA, warm shadows, generous rounding, Lucide icons, emoji only sparingly).
+- Match ui_kits/questify/index.html for exact layout, spacing, and interactions.

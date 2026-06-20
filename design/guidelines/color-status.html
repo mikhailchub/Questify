@@ -1,0 +1,24 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Status colors" subtitle="Success, danger, warning, info — with soft fills" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:24px 28px; background:var(--surface); }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .col { display:flex; flex-direction:column; gap:6px; }
+  .solid { height:46px; border-radius:var(--radius-md); display:flex; align-items:center; padding-left:10px; color:#fff; font-weight:700; font-family:var(--font-body); font-size:13px; }
+  .soft { height:30px; border-radius:var(--radius-sm); display:flex; align-items:center; padding-left:10px; font-size:11px; font-family:var(--font-mono); }
+  .name { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="col"><div class="solid" style="background:var(--success)">Success</div><div class="soft" style="background:var(--success-soft); color:var(--green-700)">--success-soft</div><span class="name">--success</span></div>
+    <div class="col"><div class="solid" style="background:var(--danger)">Danger</div><div class="soft" style="background:var(--danger-soft); color:var(--red-700)">--danger-soft</div><span class="name">--danger</span></div>
+    <div class="col"><div class="solid" style="background:var(--warning); color:var(--warm-950)">Warning</div><div class="soft" style="background:var(--warning-soft); color:var(--gold-800)">--warning-soft</div><span class="name">--warning</span></div>
+    <div class="col"><div class="solid" style="background:var(--info)">Info</div><div class="soft" style="background:var(--info-soft); color:var(--blue-700)">--info-soft</div><span class="name">--info</span></div>
+  </div>
+</body>
+</html>

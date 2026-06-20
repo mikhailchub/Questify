@@ -1,0 +1,469 @@
+<!-- @dsCard group="Questify" viewport="1320x820" name="Questify — app UI kit" subtitle="Interactive: complete quests, switch views, toggle theme, build a quest" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Questify</title>
+<link rel="stylesheet" href="../../styles.css" />
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg-base); overflow: hidden; }
+  #root { height: 100vh; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+  @keyframes qf-slide-in { from { transform: translateX(20px); } to { transform: none; } }
+  @keyframes qf-fade { from { opacity: 1; } to { opacity: 1; } }
+  @keyframes qf-pop { from { transform: translateY(12px) scale(.96); } to { transform: none; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState, useEffect, useRef } = React;
+
+/* ---------- icon helper (lucide) ---------- */
+function Icon({ name, size = 20, color = "currentColor", strokeWidth = 2, style }) {
+  return <i data-lucide={name} style={{ width: size, height: size, display: "inline-flex", color, ["--lucide-stroke"]: strokeWidth, ...style }} data-sw={strokeWidth}></i>;
+}
+function useIcons(deps) {
+  useEffect(() => {
+    if (window.lucide) lucide.createIcons({ attrs: { width: 20, height: 20, "stroke-width": 2 } });
+  });
+}
+
+/* ---------- tokens used as JS constants ---------- */
+const sp = (n) => `var(--space-${n})`;
+
+/* ---------- seed data ---------- */
+const SEED = [
+  { id: 1, title: "Morning stand-up", tags: ["daily"], diff: 1, xp: 40, due: "9:00am", done: true },
+  { id: 2, title: "Review Ada's PR #412", tags: ["code", "review"], diff: 2, xp: 120, due: "Today 2pm", done: false },
+  { id: 3, title: "Fix the login redirect bug", tags: ["bug"], diff: 2, xp: 140, due: "Today 5pm", done: false },
+  { id: 4, title: "Draft Q3 roadmap", tags: ["planning"], diff: 3, xp: 260, due: "Today 6pm", done: false },
+  { id: 5, title: "Ship the changelog", tags: ["release"], diff: 3, xp: 300, due: "Yesterday", done: false, overdue: true },
+];
+
+const ACHIEVEMENTS = [
+  { title: "First Blood", desc: "Complete 1 quest", icon: "swords", rarity: "common", unlocked: true },
+  { title: "Streaker", desc: "7-day streak", icon: "flame", rarity: "rare", unlocked: true },
+  { title: "Bug-Bane", desc: "50 bug quests", icon: "bug", rarity: "rare", unlocked: false, progress: "32 / 50" },
+  { title: "Night Coder", desc: "Quest after 2 AM", icon: "moon", rarity: "epic", unlocked: true },
+  { title: "Crunch-Slayer", desc: "Defeat a Boss Monster", icon: "skull", rarity: "epic", unlocked: false, progress: "0 / 1" },
+  { title: "Guild Master", desc: "Lead a 5-person guild", icon: "shield", rarity: "legendary", unlocked: false, progress: "Locked" },
+];
+
+const RARITY = {
+  common: { ring: "var(--rarity-common)", soft: "var(--bg-sunken)" },
+  rare: { ring: "var(--rarity-rare)", soft: "var(--info-soft)" },
+  epic: { ring: "var(--rarity-epic)", soft: "var(--arcane-100)" },
+  legendary: { ring: "var(--rarity-legendary)", soft: "var(--primary-soft)" },
+};
+
+/* ============================ primitives ============================ */
+function Stars({ level, size = 15, onPick }) {
+  return (
+    <span style={{ display: "inline-flex", gap: 2 }}>
+      {[1, 2, 3].map((i) => (
+        <svg key={i} width={size} height={size} viewBox="0 0 24 24"
+          onClick={onPick ? () => onPick(i) : undefined}
+          style={{ cursor: onPick ? "pointer" : "default" }}
+          fill={i <= level ? "var(--gold-400)" : "transparent"}
+          stroke={i <= level ? "var(--gold-500)" : "var(--border-strong)"} strokeWidth="2" strokeLinejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
+function CurrencyPill({ amount, type }) {
+  const gold = type === "gold";
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 7, height: 32, padding: "0 12px 0 6px", background: "var(--bg-sunken)", borderRadius: 999 }}>
+      <span style={{ width: 20, height: 20, borderRadius: "50%", border: `1.5px solid ${gold ? "var(--gold-600)" : "var(--arcane-700)"}`, background: gold ? "radial-gradient(circle at 35% 30%, var(--gold-300), var(--gold-coin))" : "radial-gradient(circle at 35% 30%, var(--arcane-300), var(--guild-token))", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 11 }}>{gold ? "G" : "T"}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 14, color: "var(--text-strong)" }}>{amount.toLocaleString()}</span>
+    </span>
+  );
+}
+
+function Btn({ children, variant = "primary", pop, size = "md", icon, onClick, style }) {
+  const V = {
+    primary: { bg: "var(--primary)", fg: "var(--on-primary)", pop: "var(--pop-primary)", bd: "transparent" },
+    accent: { bg: "var(--accent)", fg: "var(--on-accent)", pop: "var(--pop-accent)", bd: "transparent" },
+    secondary: { bg: "var(--surface-raised)", fg: "var(--text-strong)", pop: "var(--pop-neutral)", bd: "var(--border-strong)" },
+    ghost: { bg: "transparent", fg: "var(--text-body)", pop: "none", bd: "transparent" },
+  }[variant];
+  const H = size === "sm" ? 36 : 44;
+  return (
+    <button onClick={onClick} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, height: H, padding: size === "sm" ? "0 14px" : "0 20px", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: size === "sm" ? 14 : 16, color: V.fg, background: V.bg, border: `2px solid ${V.bd}`, borderRadius: "var(--radius-lg)", boxShadow: pop ? V.pop : "none", cursor: "pointer", ...style }}>
+      {icon && <Icon name={icon} size={18} />}
+      {children}
+    </button>
+  );
+}
+
+/* ============================ sidebar ============================ */
+function Sidebar({ view, setView }) {
+  const nav = [
+    { id: "quests", label: "Quests", icon: "scroll-text" },
+    { id: "achievements", label: "Achievements", icon: "trophy" },
+    { id: "forge", label: "Reward Forge", icon: "gem" },
+    { id: "character", label: "Character", icon: "user-round" },
+  ];
+  return (
+    <aside style={{ width: 264, flex: "none", height: "100%", background: "var(--surface)", borderRight: "1px solid var(--border)", display: "flex", flexDirection: "column", padding: sp(5), boxSizing: "border-box" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 6px 6px" }}>
+        <span style={{ width: 38, height: 38, borderRadius: 11, background: "var(--primary)", color: "var(--on-primary)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "var(--pop-primary)" }}>
+          <Icon name="shield" size={22} />
+        </span>
+        <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 22, color: "var(--text-strong)", letterSpacing: "-0.01em" }}>Questify</span>
+      </div>
+
+      <nav style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: sp(5) }}>
+        {nav.map((n) => {
+          const on = view === n.id;
+          return (
+            <button key={n.id} onClick={() => setView(n.id)} style={{ display: "flex", alignItems: "center", gap: 12, height: 46, padding: "0 14px", border: "none", borderRadius: "var(--radius-md)", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 15, color: on ? "var(--text-strong)" : "var(--text-muted)", background: on ? "var(--primary-soft)" : "transparent", cursor: "pointer", textAlign: "left" }}>
+              <Icon name={n.icon} size={20} color={on ? "var(--gold-700)" : "var(--text-muted)"} />
+              {n.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      <div style={{ marginTop: "auto", padding: sp(4), background: "var(--bg-subtle)", borderRadius: "var(--radius-lg)", border: "1px solid var(--border)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+          <span style={{ position: "relative", flex: "none" }}>
+            <span style={{ width: 44, height: 44, borderRadius: "50%", border: "3px solid var(--primary)", background: "var(--primary-soft)", color: "var(--gold-800)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 17, boxSizing: "border-box" }}>AL</span>
+            <span style={{ position: "absolute", bottom: -3, right: -3, minWidth: 20, height: 20, padding: "0 4px", borderRadius: 999, background: "var(--warm-900)", color: "var(--gold-300)", border: "2px solid var(--bg-subtle)", fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 11, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>14</span>
+          </span>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 14, color: "var(--text-strong)" }}>Ada Lovelace</div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)" }}>Wizard of Workflow</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+/* ============================ topbar ============================ */
+function TopBar({ title, gold, tokens, streak, theme, toggleTheme, onNew }) {
+  return (
+    <header style={{ height: 64, flex: "none", display: "flex", alignItems: "center", gap: sp(4), padding: "0 28px", borderBottom: "1px solid var(--border)", background: "var(--surface)" }}>
+      <h1 style={{ fontSize: 24, margin: 0, marginRight: "auto" }}>{title}</h1>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 7, height: 32, padding: "0 12px", background: "var(--accent-soft)", color: "var(--ember-700)", borderRadius: 999, fontWeight: 700, fontSize: 13 }}>
+        <Icon name="flame" size={16} color="var(--accent)" /> {streak}-day streak
+      </div>
+      <CurrencyPill amount={gold} type="gold" />
+      <CurrencyPill amount={tokens} type="token" />
+      <button onClick={toggleTheme} aria-label="Toggle theme" style={{ width: 44, height: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-md)", border: "1px solid var(--border-strong)", background: "var(--surface-raised)", color: "var(--text-strong)", cursor: "pointer" }}>
+        <Icon name={theme === "dark" ? "sun" : "moon"} size={20} />
+      </button>
+      <Btn variant="primary" pop icon="plus" onClick={onNew}>New quest</Btn>
+    </header>
+  );
+}
+
+/* ============================ dashboard ============================ */
+function QuestRow({ q, onToggle }) {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "16px 18px", background: "var(--surface-raised)", border: `1px solid ${q.overdue && !q.done ? "var(--accent)" : "var(--border)"}`, borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-sm)", opacity: q.done ? 0.6 : 1, transition: "opacity .2s, border-color .2s" }}>
+      <span onClick={() => onToggle(q.id)} style={{ width: 24, height: 24, flex: "none", marginTop: 2, borderRadius: "var(--radius-sm)", border: `2px solid ${q.done ? "var(--primary)" : "var(--border-strong)"}`, background: q.done ? "var(--primary)" : "var(--surface-raised)", color: "var(--on-primary)", display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background .15s var(--ease-spring)" }}>
+        {q.done && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
+      </span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--text-strong)", textDecoration: q.done ? "line-through" : "none", textDecorationColor: "var(--text-muted)" }}>{q.title}</span>
+          <Stars level={q.diff} size={14} />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+          {q.tags.map((t) => <span key={t} style={{ height: 24, padding: "0 10px", display: "inline-flex", alignItems: "center", fontSize: 12, fontWeight: 600, borderRadius: 999, background: "var(--bg-sunken)", color: "var(--text-body)" }}>#{t}</span>)}
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 600, color: q.overdue && !q.done ? "var(--accent)" : "var(--text-muted)" }}>
+            <Icon name="clock" size={13} /> {q.overdue && !q.done ? "Overdue · " : ""}{q.due}
+          </span>
+        </div>
+      </div>
+      <span style={{ flex: "none", alignSelf: "center", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: q.done ? "var(--text-muted)" : "var(--primary)", whiteSpace: "nowrap" }}>+{q.xp} XP</span>
+    </div>
+  );
+}
+
+function Dashboard({ quests, onToggle, xp, xpMax, level }) {
+  const [tab, setTab] = useState("today");
+  const pct = Math.min(100, (xp / xpMax) * 100);
+  const overdue = quests.filter((q) => q.overdue && !q.done);
+  const tabs = [
+    { id: "today", label: "Today", count: quests.filter((q) => !q.done).length },
+    { id: "done", label: "Done", count: quests.filter((q) => q.done).length },
+  ];
+  const shown = quests.filter((q) => (tab === "done" ? q.done : !q.done));
+
+  return (
+    <div style={{ animation: "qf-fade .25s var(--ease-out)" }}>
+      {/* XP banner */}
+      <div style={{ display: "flex", alignItems: "center", gap: sp(6), padding: sp(6), background: "linear-gradient(120deg, var(--surface-raised), var(--primary-soft))", border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", marginBottom: sp(6) }}>
+        <span style={{ width: 64, height: 64, flex: "none", borderRadius: "50%", border: "4px solid var(--primary)", background: "var(--surface-raised)", color: "var(--gold-700)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 26, boxSizing: "border-box" }}>{level}</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 20, color: "var(--text-strong)" }}>Wizard of Workflow</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--text-muted)", whiteSpace: "nowrap" }}>{Math.round(xp).toLocaleString()} / {xpMax.toLocaleString()} XP</span>
+          </div>
+          <div style={{ marginTop: 8, height: 14, background: "var(--xp-track)", borderRadius: 999, overflow: "hidden", boxShadow: "var(--shadow-inset)" }}>
+            <div style={{ width: pct + "%", height: "100%", background: "linear-gradient(90deg, var(--gold-400), var(--gold-300))", borderRadius: 999, transition: "width .5s var(--ease-out)" }} />
+          </div>
+        </div>
+        <div style={{ textAlign: "right", flex: "none" }}>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--text-muted)" }}>NEXT</div>
+          <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 28, color: "var(--text-strong)" }}>Lv {level + 1}</div>
+        </div>
+      </div>
+
+      {overdue.length >= 1 && (
+        <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "18px 20px", background: "var(--monster-soft)", border: "2px solid var(--monster)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-md)", marginBottom: sp(6) }}>
+          <div style={{ width: 56, height: 56, flex: "none", borderRadius: "var(--radius-md)", background: "var(--monster)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}><Icon name="skull" size={30} /></div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", color: "#fff", background: "var(--monster)", padding: "2px 7px", borderRadius: 999 }}>Monster</span>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--ember-700)", whiteSpace: "nowrap" }}>Scope-Creep Kraken</span>
+            </div>
+            <div style={{ fontSize: 12, color: "var(--ember-700)", opacity: .85, marginTop: 2 }}>Spawned by {overdue.length} overdue {overdue.length === 1 ? "quest" : "quests"} · blocking Gold until defeated</div>
+          </div>
+          <Btn variant="accent" pop icon="swords">Battle</Btn>
+        </div>
+      )}
+
+      {/* tabs */}
+      <div style={{ display: "inline-flex", gap: 4, padding: 4, background: "var(--bg-sunken)", borderRadius: "var(--radius-lg)", marginBottom: sp(4) }}>
+        {tabs.map((t) => {
+          const on = t.id === tab;
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{ display: "inline-flex", alignItems: "center", gap: 7, height: 36, padding: "0 16px", border: "none", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 14, color: on ? "var(--text-strong)" : "var(--text-muted)", background: on ? "var(--surface-raised)" : "transparent", boxShadow: on ? "var(--shadow-sm)" : "none", borderRadius: "var(--radius-md)", cursor: "pointer" }}>
+              {t.label} <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: on ? "var(--primary)" : "var(--text-muted)" }}>{t.count}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {shown.map((q) => <QuestRow key={q.id} q={q} onToggle={onToggle} />)}
+        {shown.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "var(--text-muted)", fontSize: 15 }}>No quests here. Time for a side-quest? ⚔</div>}
+      </div>
+    </div>
+  );
+}
+
+/* ============================ achievements ============================ */
+function Achievements() {
+  const unlocked = ACHIEVEMENTS.filter((a) => a.unlocked).length;
+  return (
+    <div style={{ animation: "qf-fade .25s var(--ease-out)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: sp(6) }}>
+        <p style={{ fontSize: 15, color: "var(--text-body)", margin: 0 }}>You've earned <b style={{ color: "var(--text-strong)" }}>{unlocked} of {ACHIEVEMENTS.length}</b> achievements.</p>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: sp(4) }}>
+        {ACHIEVEMENTS.map((a) => {
+          const r = RARITY[a.rarity];
+          return (
+            <div key={a.title} style={{ display: "flex", gap: 14, alignItems: "center", padding: sp(4), background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-sm)", opacity: a.unlocked ? 1 : 0.7 }}>
+              <div style={{ width: 56, height: 56, flex: "none", borderRadius: "50%", border: `3px solid ${a.unlocked ? r.ring : "var(--border-strong)"}`, background: a.unlocked ? r.soft : "var(--bg-sunken)", color: a.unlocked ? r.ring : "var(--text-muted)", display: "flex", alignItems: "center", justifyContent: "center", filter: a.unlocked ? "none" : "grayscale(1)", boxShadow: a.unlocked && a.rarity === "legendary" ? "var(--glow-gold)" : "none" }}>
+                <Icon name={a.unlocked ? a.icon : "lock"} size={26} />
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 16, color: "var(--text-strong)" }}>{a.title}</span>
+                </div>
+                <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 1 }}>{a.desc}</div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: a.unlocked ? "var(--success)" : "var(--text-muted)", marginTop: 5, textTransform: "uppercase", letterSpacing: ".04em" }}>{a.unlocked ? "✓ Unlocked" : a.progress}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ============================ placeholder views ============================ */
+function Placeholder({ icon, title, body }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 20px", textAlign: "center", animation: "qf-fade .25s var(--ease-out)" }}>
+      <div style={{ width: 72, height: 72, borderRadius: 20, background: "var(--primary-soft)", color: "var(--gold-700)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}><Icon name={icon} size={34} /></div>
+      <h2 style={{ fontSize: 26, margin: 0 }}>{title}</h2>
+      <p style={{ fontSize: 15, color: "var(--text-muted)", maxWidth: 360, marginTop: 8 }}>{body}</p>
+    </div>
+  );
+}
+
+/* ============================ quest builder modal ============================ */
+function QuestBuilder({ onClose, onCreate }) {
+  const [title, setTitle] = useState("");
+  const [diff, setDiff] = useState(2);
+  const [tags, setTags] = useState(["bug"]);
+  const [tagInput, setTagInput] = useState("");
+  const [due, setDue] = useState("Today 5pm");
+  const base = 60;
+  const xp = Math.round(base * diff * 1.1);
+
+  const addTag = (e) => {
+    if (e.key === "Enter" && tagInput.trim()) {
+      setTags([...new Set([...tags, tagInput.trim().replace(/^#/, "")])]);
+      setTagInput("");
+    }
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 900, background: "rgba(31,26,18,.45)", backdropFilter: "blur(2px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, animation: "qf-fade .2s var(--ease-out)" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 520, background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-xl)", overflow: "hidden", animation: "qf-pop .32s var(--ease-spring)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
+          <h3 style={{ fontSize: 24, margin: 0 }}>New quest</h3>
+          <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", color: "var(--text-muted)", cursor: "pointer", padding: 6, display: "inline-flex" }}><Icon name="x" size={20} /></button>
+        </div>
+        <div style={{ padding: "16px 24px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 14, fontWeight: 600, color: "var(--text-strong)" }}>Title</label>
+            <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Defeat the inbox" style={{ height: 44, padding: "0 14px", fontFamily: "var(--font-body)", fontSize: 16, color: "var(--text-strong)", background: "var(--surface-raised)", border: "2px solid var(--border-strong)", borderRadius: "var(--radius-md)", outline: "none" }} />
+          </div>
+
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              <label style={{ fontSize: 14, fontWeight: 600, color: "var(--text-strong)" }}>Difficulty</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, height: 44 }}>
+                <Stars level={diff} size={26} onPick={setDiff} />
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)" }}>{["", "Easy", "Medium", "Hard"][diff]}</span>
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              <label style={{ fontSize: 14, fontWeight: 600, color: "var(--text-strong)" }}>Deadline</label>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 44, padding: "0 14px", border: "2px solid var(--border-strong)", borderRadius: "var(--radius-md)", color: "var(--text-strong)", fontSize: 15 }}>
+                <Icon name="calendar" size={16} color="var(--text-muted)" /> {due}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            <label style={{ fontSize: 14, fontWeight: 600, color: "var(--text-strong)" }}>Tags</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", minHeight: 44, padding: "0 12px", border: "2px solid var(--border-strong)", borderRadius: "var(--radius-md)" }}>
+              {tags.map((t) => (
+                <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 26, padding: "0 10px", fontSize: 12, fontWeight: 600, borderRadius: 999, background: "var(--primary-soft)", color: "var(--gold-800)" }}>
+                  #{t}<span onClick={() => setTags(tags.filter((x) => x !== t))} style={{ cursor: "pointer", display: "inline-flex" }}><Icon name="x" size={12} /></span>
+                </span>
+              ))}
+              <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={addTag} placeholder="add tag…" style={{ flex: 1, minWidth: 80, height: 40, border: "none", outline: "none", background: "transparent", fontSize: 14, color: "var(--text-strong)" }} />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "var(--primary-soft)", borderRadius: "var(--radius-md)" }}>
+            <Icon name="sparkles" size={18} color="var(--gold-700)" />
+            <span style={{ fontSize: 14, color: "var(--gold-800)" }}>Reward preview:</span>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15, color: "var(--gold-800)" }}>+{xp} XP · +{Math.round(xp / 8)} Gold</span>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", padding: "16px 24px", borderTop: "1px solid var(--border)", background: "var(--bg-subtle)" }}>
+          <Btn variant="ghost" onClick={onClose}>Cancel</Btn>
+          <Btn variant="primary" pop icon="sword" onClick={() => onCreate({ title: title || "Untitled quest", diff, tags, due, xp })}>Create quest</Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================ toast ============================ */
+function ToastStack({ toasts }) {
+  return (
+    <div style={{ position: "fixed", right: 24, bottom: 24, zIndex: 1000, display: "flex", flexDirection: "column", gap: 12 }}>
+      {toasts.map((t) => (
+        <div key={t.id} style={{ display: "flex", alignItems: "flex-start", gap: 12, width: 320, padding: "14px 16px", background: "var(--surface-raised)", border: "1px solid var(--border)", borderLeft: `4px solid ${t.tone === "success" ? "var(--success)" : "var(--accent)"}`, borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-lg)", animation: "qf-slide-in .3s var(--ease-spring)" }}>
+          <span style={{ color: t.tone === "success" ? "var(--success)" : "var(--accent)", display: "inline-flex", marginTop: 1 }}><Icon name={t.tone === "success" ? "party-popper" : "skull"} size={20} /></span>
+          <div>
+            <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 15, color: "var(--text-strong)" }}>{t.title}</div>
+            <div style={{ fontSize: 13, color: "var(--text-body)", marginTop: 2 }}>{t.msg}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============================ app ============================ */
+const TITLES = { quests: "Today's Quests", achievements: "Achievements", forge: "Reward Forge", character: "Character" };
+
+function App() {
+  const [view, setView] = useState("quests");
+  const [theme, setTheme] = useState("light");
+  const [quests, setQuests] = useState(SEED);
+  const [gold, setGold] = useState(1240);
+  const [tokens] = useState(6);
+  const [xp, setXp] = useState(640);
+  const [level] = useState(14);
+  const [builder, setBuilder] = useState(false);
+  const [toasts, setToasts] = useState([]);
+  const xpMax = 1000;
+
+  useIcons([view, theme, quests, builder, toasts]);
+  useEffect(() => { document.documentElement.setAttribute("data-theme", theme); }, [theme]);
+
+  const pushToast = (t) => {
+    const id = Date.now() + Math.random();
+    setToasts((s) => [...s, { ...t, id }]);
+    setTimeout(() => setToasts((s) => s.filter((x) => x.id !== id)), 3200);
+  };
+
+  const onToggle = (id) => {
+    setQuests((qs) => qs.map((q) => {
+      if (q.id !== id) return q;
+      const nowDone = !q.done;
+      if (nowDone) {
+        setXp((x) => Math.min(xpMax, x + q.xp));
+        setGold((g) => g + Math.round(q.xp / 8));
+        pushToast({ tone: "success", title: "Quest complete!", msg: `+${q.xp} XP · +${Math.round(q.xp / 8)} Gold` });
+      } else {
+        setXp((x) => Math.max(0, x - q.xp));
+        setGold((g) => g - Math.round(q.xp / 8));
+      }
+      return { ...q, done: nowDone };
+    }));
+  };
+
+  const onCreate = (data) => {
+    setQuests((qs) => [{ id: Date.now(), title: data.title, tags: data.tags, diff: data.diff, xp: data.xp, due: data.due, done: false }, ...qs]);
+    setBuilder(false);
+    setView("quests");
+    pushToast({ tone: "success", title: "Quest added to your log", msg: `"${data.title}" · +${data.xp} XP on completion` });
+  };
+
+  return (
+    <div style={{ display: "flex", height: "100vh", color: "var(--text-body)" }}>
+      <Sidebar view={view} setView={setView} />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+        <TopBar title={TITLES[view]} gold={gold} tokens={tokens} streak={7} theme={theme} toggleTheme={() => setTheme(theme === "light" ? "dark" : "light")} onNew={() => setBuilder(true)} />
+        <main style={{ flex: 1, overflowY: "auto", padding: "28px", maxWidth: 920, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
+          {view === "quests" && <Dashboard quests={quests} onToggle={onToggle} xp={xp} xpMax={xpMax} level={level} />}
+          {view === "achievements" && <Achievements />}
+          {view === "forge" && <Placeholder icon="gem" title="Reward Forge" body="Spend Gold and Guild Tokens on avatar skins, victory SFX, focus-music loops and Time-Freeze Pomodoro boosts." />}
+          {view === "character" && <Placeholder icon="user-round" title="Character" body="Customize your class, avatar gear, and equipped cosmetics unlocked through leveling." />}
+        </main>
+      </div>
+      {builder && <QuestBuilder onClose={() => setBuilder(false)} onCreate={onCreate} />}
+      <ToastStack toasts={toasts} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+<script>
+  (function boot() {
+    if (!window.Babel || !window.React || !window.ReactDOM) { return setTimeout(boot, 30); }
+    var src = document.getElementById("app-src").textContent;
+    var out = Babel.transform(src, { presets: [["react", { runtime: "classic" }]] }).code;
+    (0, eval)(out);
+  })();
+</script>
+</body>
+</html>

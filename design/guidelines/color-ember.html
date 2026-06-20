@@ -1,0 +1,28 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Accent — Ember" subtitle="Energy & urgency. Streaks, alerts, monsters." -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:24px 28px; background:var(--surface); }
+  .ramp { display:flex; gap:8px; }
+  .sw { flex:1; height:64px; border-radius:var(--radius-md); display:flex; align-items:flex-end; padding:6px; box-shadow: var(--shadow-xs); }
+  .lab { font-family:var(--font-mono); font-size:10px; }
+  .cap { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-top:10px; }
+</style>
+</head>
+<body>
+  <div class="ramp">
+    <div class="sw" style="background:var(--ember-50);"><span class="lab" style="color:var(--ember-700)">50</span></div>
+    <div class="sw" style="background:var(--ember-100);"><span class="lab" style="color:var(--ember-700)">100</span></div>
+    <div class="sw" style="background:var(--ember-200);"><span class="lab" style="color:var(--ember-700)">200</span></div>
+    <div class="sw" style="background:var(--ember-300);"><span class="lab" style="color:#fff">300</span></div>
+    <div class="sw" style="background:var(--ember-400);"><span class="lab" style="color:#fff">400</span></div>
+    <div class="sw" style="background:var(--ember-500); outline:2px solid var(--warm-900); outline-offset:2px;"><span class="lab" style="color:#fff">500★</span></div>
+    <div class="sw" style="background:var(--ember-600);"><span class="lab" style="color:#fff">600</span></div>
+    <div class="sw" style="background:var(--ember-700);"><span class="lab" style="color:#fff">700</span></div>
+  </div>
+  <div class="cap">--accent = --ember-500 · use for links, secondary CTAs, monster states</div>
+</body>
+</html>

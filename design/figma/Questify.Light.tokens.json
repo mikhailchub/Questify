@@ -1,0 +1,162 @@
+{
+  "bg": {
+    "base": {
+      "$type": "color",
+      "$value": "#fbf7f0"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "#f4ecdf"
+    },
+    "sunken": {
+      "$type": "color",
+      "$value": "#e9dcc6"
+    }
+  },
+  "surface": {
+    "default": {
+      "$type": "color",
+      "$value": "#fffdf9"
+    },
+    "raised": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "#fbf7f0"
+    }
+  },
+  "border": {
+    "default": {
+      "$type": "color",
+      "$value": "#e9dcc6"
+    },
+    "strong": {
+      "$type": "color",
+      "$value": "#d8c4a3"
+    },
+    "focus": {
+      "$type": "color",
+      "$value": "#efa717"
+    }
+  },
+  "text": {
+    "strong": {
+      "$type": "color",
+      "$value": "#1f1a12"
+    },
+    "body": {
+      "$type": "color",
+      "$value": "#524631"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "#97805b"
+    },
+    "inverse": {
+      "$type": "color",
+      "$value": "#fbf7f0"
+    }
+  },
+  "primary": {
+    "default": {
+      "$type": "color",
+      "$value": "#d98c0b"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "#b46f0a"
+    },
+    "press": {
+      "$type": "color",
+      "$value": "#8b540b"
+    },
+    "soft": {
+      "$type": "color",
+      "$value": "#ffedc2"
+    },
+    "on": {
+      "$type": "color",
+      "$value": "#14110b"
+    }
+  },
+  "accent": {
+    "default": {
+      "$type": "color",
+      "$value": "#d8451c"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "#b13417"
+    },
+    "soft": {
+      "$type": "color",
+      "$value": "#fcd4c6"
+    },
+    "on": {
+      "$type": "color",
+      "$value": "#ffffff"
+    }
+  },
+  "status": {
+    "success": {
+      "$type": "color",
+      "$value": "#2e9e5b"
+    },
+    "success-soft": {
+      "$type": "color",
+      "$value": "#d6f0dc"
+    },
+    "danger": {
+      "$type": "color",
+      "$value": "#db3b35"
+    },
+    "danger-soft": {
+      "$type": "color",
+      "$value": "#fbd9d6"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "#efa717"
+    },
+    "warning-soft": {
+      "$type": "color",
+      "$value": "#ffedc2"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "#2b8fb8"
+    },
+    "info-soft": {
+      "$type": "color",
+      "$value": "#d4e9f4"
+    }
+  },
+  "game": {
+    "xp-fill": {
+      "$type": "color",
+      "$value": "#efa717"
+    },
+    "xp-track": {
+      "$type": "color",
+      "$value": "#e9dcc6"
+    },
+    "gold-coin": {
+      "$type": "color",
+      "$value": "#d98c0b"
+    },
+    "guild-token": {
+      "$type": "color",
+      "$value": "#7c5cd6"
+    },
+    "monster": {
+      "$type": "color",
+      "$value": "#b13417"
+    },
+    "monster-soft": {
+      "$type": "color",
+      "$value": "#fcd4c6"
+    }
+  }
+}

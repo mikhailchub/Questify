@@ -1,0 +1,39 @@
+<!-- @dsCard group="Colors" viewport="700x230" name="Semantic roles (light + dark)" subtitle="Surface, text & border aliases that flip per mode" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:0; display:flex; font-family:var(--font-body); }
+  .pane { flex:1; padding:22px 24px; display:flex; flex-direction:column; gap:10px; }
+  .swrow { display:flex; align-items:center; gap:10px; }
+  .dot { width:26px; height:26px; border-radius:7px; border:1px solid var(--border-strong); flex:none; }
+  .nm { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); }
+  .card { background:var(--surface-raised); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px; box-shadow:var(--shadow-sm); }
+  h4 { font-family:var(--font-display); font-size:13px; margin:0 0 4px; color:var(--text-strong); letter-spacing:.06em; text-transform:uppercase; }
+</style>
+</head>
+<body>
+  <div class="pane" style="background:var(--bg-base);">
+    <h4>Light</h4>
+    <div class="card">
+      <div style="color:var(--text-strong); font-weight:700;">Strong text</div>
+      <div style="color:var(--text-body); font-size:14px;">Body text on surface</div>
+      <div style="color:var(--text-muted); font-size:12px;">Muted meta</div>
+    </div>
+    <div class="swrow"><span class="dot" style="background:var(--surface)"></span><span class="nm">--surface</span></div>
+    <div class="swrow"><span class="dot" style="background:var(--bg-subtle)"></span><span class="nm">--bg-subtle</span></div>
+  </div>
+  <div class="pane dark" style="background:var(--bg-base);">
+    <h4>Dark</h4>
+    <div class="card">
+      <div style="color:var(--text-strong); font-weight:700;">Strong text</div>
+      <div style="color:var(--text-body); font-size:14px;">Body text on surface</div>
+      <div style="color:var(--text-muted); font-size:12px;">Muted meta</div>
+    </div>
+    <div class="swrow"><span class="dot" style="background:var(--surface)"></span><span class="nm">--surface</span></div>
+    <div class="swrow"><span class="dot" style="background:var(--bg-subtle)"></span><span class="nm">--bg-subtle</span></div>
+  </div>
+</body>
+</html>

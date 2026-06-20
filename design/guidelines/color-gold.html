@@ -1,0 +1,29 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Primary — Gold" subtitle="Treasure gold. Primary actions, XP, level-ups." -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:24px 28px; background:var(--surface); }
+  .ramp { display:flex; gap:8px; }
+  .sw { flex:1; height:64px; border-radius:var(--radius-md); display:flex; align-items:flex-end; padding:6px; box-shadow: var(--shadow-xs); }
+  .lab { font-family:var(--font-mono); font-size:10px; }
+  .cap { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-top:10px; }
+</style>
+</head>
+<body>
+  <div class="ramp">
+    <div class="sw" style="background:var(--gold-50);"><span class="lab" style="color:var(--warm-700)">50</span></div>
+    <div class="sw" style="background:var(--gold-100);"><span class="lab" style="color:var(--warm-700)">100</span></div>
+    <div class="sw" style="background:var(--gold-200);"><span class="lab" style="color:var(--warm-800)">200</span></div>
+    <div class="sw" style="background:var(--gold-300);"><span class="lab" style="color:var(--warm-900)">300</span></div>
+    <div class="sw" style="background:var(--gold-400);"><span class="lab" style="color:var(--warm-950)">400</span></div>
+    <div class="sw" style="background:var(--gold-500); outline:2px solid var(--warm-900); outline-offset:2px;"><span class="lab" style="color:#fff">500★</span></div>
+    <div class="sw" style="background:var(--gold-600);"><span class="lab" style="color:#fff">600</span></div>
+    <div class="sw" style="background:var(--gold-700);"><span class="lab" style="color:#fff">700</span></div>
+    <div class="sw" style="background:var(--gold-800);"><span class="lab" style="color:#fff">800</span></div>
+  </div>
+  <div class="cap">--primary = --gold-500 · on dark, primary shifts to --gold-400</div>
+</body>
+</html>

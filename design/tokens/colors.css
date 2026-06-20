@@ -1,0 +1,177 @@
+/* ============================================================
+   COLORS — Questify
+   Warm & adventurous: treasure gold, ember, parchment neutrals.
+   Two layers:
+     1. PALETTE — raw, mode-independent ramps (--gold-500, --warm-100 …)
+     2. SEMANTIC — role aliases that flip between light & dark
+   Figma: mirror the palette as a "Primitives" collection and the
+   semantic block as a "Tokens" collection with Light/Dark modes.
+   ============================================================ */
+
+:root {
+  /* ---------- PALETTE: warm neutrals (parchment → ink) ---------- */
+  --warm-50:  #fbf7f0;
+  --warm-100: #f4ecdf;
+  --warm-200: #e9dcc6;
+  --warm-300: #d8c4a3;
+  --warm-400: #bda175;
+  --warm-500: #97805b;
+  --warm-600: #6f5d42;
+  --warm-700: #524631;
+  --warm-800: #352c1f;
+  --warm-900: #1f1a12;
+  --warm-950: #14110b;
+
+  /* ---------- PALETTE: gold (primary / treasure) ---------- */
+  --gold-50:  #fff8e7;
+  --gold-100: #ffedc2;
+  --gold-200: #fbd884;
+  --gold-300: #f5c04c;
+  --gold-400: #efa717;
+  --gold-500: #d98c0b;
+  --gold-600: #b46f0a;
+  --gold-700: #8b540b;
+  --gold-800: #5d390b;
+
+  /* ---------- PALETTE: ember (accent / energy) ---------- */
+  --ember-50:  #feeee8;
+  --ember-100: #fcd4c6;
+  --ember-200: #f8ab8e;
+  --ember-300: #f3835c;
+  --ember-400: #ec5e34;
+  --ember-500: #d8451c;
+  --ember-600: #b13417;
+  --ember-700: #862917;
+
+  /* ---------- PALETTE: functional ---------- */
+  --green-100: #d6f0dc;
+  --green-300: #7fce98;
+  --green-500: #2e9e5b;
+  --green-700: #1d6b3d;
+
+  --red-100: #fbd9d6;
+  --red-300: #ef8c87;
+  --red-500: #db3b35;
+  --red-700: #962420;
+
+  --blue-100: #d4e9f4;
+  --blue-300: #74b6da;
+  --blue-500: #2b8fb8;
+  --blue-700: #1a607d;
+
+  /* ---------- PALETTE: arcane (rarity accent, used sparingly) ---------- */
+  --arcane-100: #e4dcfa;
+  --arcane-300: #b09ef0;
+  --arcane-500: #7c5cd6;
+  --arcane-700: #523a96;
+
+  /* ---------- RARITY ramp (gear, achievements) ---------- */
+  --rarity-common:    var(--warm-400);
+  --rarity-rare:      var(--blue-500);
+  --rarity-epic:      var(--arcane-500);
+  --rarity-legendary: var(--gold-500);
+
+  /* ============================================================
+     SEMANTIC — LIGHT (default)
+     ============================================================ */
+  --bg-base:        var(--warm-50);
+  --bg-subtle:      var(--warm-100);
+  --bg-sunken:      var(--warm-200);
+
+  --surface:        #fffdf9;
+  --surface-raised: #ffffff;
+  --surface-hover:  var(--warm-50);
+
+  --border:         var(--warm-200);
+  --border-strong:  var(--warm-300);
+  --border-focus:   var(--gold-400);
+
+  --text-strong:    var(--warm-900);
+  --text-body:      var(--warm-700);
+  --text-muted:     var(--warm-500);
+  --text-inverse:   var(--warm-50);
+
+  /* brand roles */
+  --primary:        var(--gold-500);
+  --primary-hover:  var(--gold-600);
+  --primary-press:  var(--gold-700);
+  --primary-soft:   var(--gold-100);
+  --on-primary:     var(--warm-950);
+
+  --accent:         var(--ember-500);
+  --accent-hover:   var(--ember-600);
+  --accent-soft:    var(--ember-100);
+  --on-accent:      #ffffff;
+
+  /* status roles */
+  --success:        var(--green-500);
+  --success-soft:   var(--green-100);
+  --danger:         var(--red-500);
+  --danger-soft:    var(--red-100);
+  --warning:        var(--gold-400);
+  --warning-soft:   var(--gold-100);
+  --info:           var(--blue-500);
+  --info-soft:      var(--blue-100);
+
+  /* game roles */
+  --xp-fill:        var(--gold-400);
+  --xp-track:       var(--warm-200);
+  --gold-coin:      var(--gold-500);   /* ⚔️ Gold currency */
+  --guild-token:    var(--arcane-500); /* 🎟️ Guild Tokens */
+  --monster:        var(--ember-600);
+  --monster-soft:   var(--ember-100);
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   SEMANTIC — DARK
+   Apply with <html data-theme="dark"> or class .dark on a scope.
+   ============================================================ */
+[data-theme="dark"], .dark {
+  --bg-base:        var(--warm-950);
+  --bg-subtle:      #1b160f;
+  --bg-sunken:      #110e09;
+
+  --surface:        #211b12;
+  --surface-raised: #2a2218;
+  --surface-hover:  #312818;
+
+  --border:         #3a3022;
+  --border-strong:  #4d4030;
+  --border-focus:   var(--gold-400);
+
+  --text-strong:    var(--warm-50);
+  --text-body:      #ddd1bb;
+  --text-muted:     #9a8a6e;
+  --text-inverse:   var(--warm-950);
+
+  --primary:        var(--gold-400);
+  --primary-hover:  var(--gold-300);
+  --primary-press:  var(--gold-500);
+  --primary-soft:   #3a2c10;
+  --on-primary:     var(--warm-950);
+
+  --accent:         var(--ember-400);
+  --accent-hover:   var(--ember-300);
+  --accent-soft:    #3a201592;
+  --on-accent:      #ffffff;
+
+  --success:        var(--green-300);
+  --success-soft:   #16331f;
+  --danger:         var(--red-300);
+  --danger-soft:    #3a1715;
+  --warning:        var(--gold-300);
+  --warning-soft:   #3a2c10;
+  --info:           var(--blue-300);
+  --info-soft:      #112a36;
+
+  --xp-fill:        var(--gold-300);
+  --xp-track:       #3a3022;
+  --gold-coin:      var(--gold-300);
+  --guild-token:    var(--arcane-300);
+  --monster:        var(--ember-300);
+  --monster-soft:   #3a2015;
+
+  color-scheme: dark;
+}

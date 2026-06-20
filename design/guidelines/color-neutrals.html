@@ -1,0 +1,31 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Neutrals — Warm" subtitle="Parchment → ink. Backgrounds, text, borders." -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:24px 28px; background:var(--surface); }
+  .ramp { display:flex; gap:6px; }
+  .sw { flex:1; height:64px; border-radius:var(--radius-md); display:flex; align-items:flex-end; padding:5px; box-shadow: var(--shadow-xs); }
+  .lab { font-family:var(--font-mono); font-size:9px; }
+  .cap { font-family:var(--font-mono); font-size:11px; color:var(--text-muted); margin-top:10px; }
+</style>
+</head>
+<body>
+  <div class="ramp">
+    <div class="sw" style="background:var(--warm-50); border:1px solid var(--border);"><span class="lab" style="color:var(--warm-700)">50</span></div>
+    <div class="sw" style="background:var(--warm-100);"><span class="lab" style="color:var(--warm-700)">100</span></div>
+    <div class="sw" style="background:var(--warm-200);"><span class="lab" style="color:var(--warm-800)">200</span></div>
+    <div class="sw" style="background:var(--warm-300);"><span class="lab" style="color:var(--warm-900)">300</span></div>
+    <div class="sw" style="background:var(--warm-400);"><span class="lab" style="color:#fff">400</span></div>
+    <div class="sw" style="background:var(--warm-500);"><span class="lab" style="color:#fff">500</span></div>
+    <div class="sw" style="background:var(--warm-600);"><span class="lab" style="color:#fff">600</span></div>
+    <div class="sw" style="background:var(--warm-700);"><span class="lab" style="color:#fff">700</span></div>
+    <div class="sw" style="background:var(--warm-800);"><span class="lab" style="color:#fff">800</span></div>
+    <div class="sw" style="background:var(--warm-900);"><span class="lab" style="color:#fff">900</span></div>
+    <div class="sw" style="background:var(--warm-950);"><span class="lab" style="color:#fff">950</span></div>
+  </div>
+  <div class="cap">warm-tinted greys — never pure neutral. Text on light: 900 / 700 / 500.</div>
+</body>
+</html>

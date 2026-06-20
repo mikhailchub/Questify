@@ -1,0 +1,28 @@
+<!-- @dsCard group="Type" viewport="700x190" name="Display — Fredoka" subtitle="Headings, quest titles, big numerals" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; padding: 28px 32px; background: var(--surface); }
+  .row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .label { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: .04em; }
+  .specimen { font-family: var(--font-display); color: var(--text-strong); line-height: 1.05; }
+</style>
+</head>
+<body>
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    <div class="specimen" style="font-size:52px; font-weight:600;">Slay the backlog</div>
+    <div class="row">
+      <span class="specimen" style="font-size:30px; font-weight:500;">Level&nbsp;14 Wizard</span>
+      <span class="specimen" style="font-size:30px; font-weight:700; color:var(--primary);">+240&nbsp;XP</span>
+    </div>
+    <div class="row" style="gap:24px;">
+      <span class="label">Fredoka</span>
+      <span class="label">400 · 500 · 600 · 700</span>
+      <span class="label">tracking −0.02em</span>
+    </div>
+  </div>
+</body>
+</html>

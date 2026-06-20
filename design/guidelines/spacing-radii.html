@@ -1,0 +1,23 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Corner radii" subtitle="--radius-xs 4 → --radius-2xl 28 + pill" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:24px 28px; background:var(--surface); display:flex; gap:18px; align-items:flex-end; flex-wrap:wrap; }
+  .col { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .box { width:60px; height:60px; background:var(--gold-100); border:2px solid var(--gold-400); }
+  .nm { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="col"><div class="box" style="border-radius:var(--radius-xs)"></div><span class="nm">xs · 4</span></div>
+  <div class="col"><div class="box" style="border-radius:var(--radius-sm)"></div><span class="nm">sm · 6</span></div>
+  <div class="col"><div class="box" style="border-radius:var(--radius-md)"></div><span class="nm">md · 10</span></div>
+  <div class="col"><div class="box" style="border-radius:var(--radius-lg)"></div><span class="nm">lg · 16</span></div>
+  <div class="col"><div class="box" style="border-radius:var(--radius-xl)"></div><span class="nm">xl · 22</span></div>
+  <div class="col"><div class="box" style="border-radius:var(--radius-2xl)"></div><span class="nm">2xl · 28</span></div>
+  <div class="col"><div class="box" style="border-radius:var(--radius-pill)"></div><span class="nm">pill</span></div>
+</body>
+</html>

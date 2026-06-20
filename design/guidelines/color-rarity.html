@@ -1,0 +1,24 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Rarity ramp" subtitle="Gear & achievement tiers — common → legendary" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; padding:24px 28px; background:var(--surface); }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .col { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .gem { width:54px; height:54px; border-radius:var(--radius-md); transform:rotate(45deg); box-shadow: var(--shadow-sm); }
+  .t { font-family:var(--font-display); font-weight:600; font-size:14px; color:var(--text-strong); }
+  .n { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="col"><div class="gem" style="background:var(--rarity-common)"></div><span class="t">Common</span><span class="n">--rarity-common</span></div>
+    <div class="col"><div class="gem" style="background:var(--rarity-rare)"></div><span class="t">Rare</span><span class="n">--rarity-rare</span></div>
+    <div class="col"><div class="gem" style="background:var(--rarity-epic)"></div><span class="t">Epic</span><span class="n">--rarity-epic</span></div>
+    <div class="col"><div class="gem" style="background:var(--rarity-legendary); box-shadow:var(--glow-gold)"></div><span class="t">Legendary</span><span class="n">--rarity-legendary</span></div>
+  </div>
+</body>
+</html>
