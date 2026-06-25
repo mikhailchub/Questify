@@ -25,7 +25,7 @@ export function CharacterView() {
   const ownedBody = REWARDS_LIBRARY.filter((r) => r.type === "body" && purchasedRewards.includes(r.id));
   const ownedPet = REWARDS_LIBRARY.filter((r) => r.type === "pet" && purchasedRewards.includes(r.id));
 
-  const classes = ["Wizard of Workflow", "Deadline Dragon-Rider", "Kanban Knight"];
+  const classes = ["Wizard of Workflow", "Deadline Dragon-Rider", "Kanban Knight", "Procrastinator Prince"];
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--space-6)" }}>

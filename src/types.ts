@@ -20,7 +20,7 @@ export interface AvatarState {
   gold: number;
   tokens: number;
   streak: number;
-  class: string; // Wizard of Workflow, Deadline Dragon-Rider, Kanban Knight
+  class: string; // Wizard of Workflow, Deadline Dragon-Rider, Kanban Knight, Procrastinator Prince
   equippedHead?: string;
   equippedBody?: string;
   equippedPet?: string;

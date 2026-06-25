@@ -45,6 +45,8 @@ export function DashboardView() {
       ? ["casts Kanban Fireball!", "summons a Sprint Storm!", "brews a Refactoring Potion!"]
       : avatar.class === "Deadline Dragon-Rider"
       ? ["commands dragon fire!", "charges with critical path spear!", "soars over blockers!"]
+      : avatar.class === "Procrastinator Prince"
+      ? ["delays the monster into confusion!", "summons a last-minute sprint!", "parries with a deadline extension!"]
       : ["slashes with Stand-up Sword!", "deflects with Kanban Shield!", "charges forward!"];
 
     const chosenAttack = attacks[Math.floor(Math.random() * attacks.length)];
